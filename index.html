@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>SCANNER</title>
+
+   
+
+</head>
+<body>
+
+
+  <!-- The QR code scanner container -->
+  <div id="reader" ></div>
+    
+
+  <!-- Button to initiate the first QR code scan -->
+  <div id="button-container">
+
+
+    <button id="scanButton">Scan Code </button>
+    <button id="restartButton">Restart</button>
+  </div>
+  <!-- Button to restart the process -->
+  
+  
+   <!-- Display the scan result or comparison result here -->
+  <div id="result"></div>
+ 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js" integrity="sha512-k/KAe4Yff9EUdYI5/IAHlwUswqeipP+Cp5qnrsUjTPCgl51La2/JhyyjNciztD7mWNKLSXci48m7cctATKfLlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+main {
+display: flex ;
+justify-content: center;
+align-items: center;
+
+}
+
+#reader {
+width: 400px;
+margin:auto;
+
+
+}
+#button-container{
+display: flex ;
+justify-content: center;
+align-items: center;
+margin-Top:10px;
+
+
+}
+#result {
+text-align: center;
+font-size: 20px;
+}
+
+#restartButton{
+  margin-left: 10px;
+  font-size: 30px !important;
+}
+
+#scanButton{
+  font-size: 30px !important;
+}
+</style>
+<main>
+<div id="reader"></div>
+<div id="result"></div>
+</main>
+
+                
+<script> //java script 
+  let qrCode1 = null;
+  let qrCode2 = null;
+
+  const scanner = new Html5QrcodeScanner('reader', {
+    qrbox: {
+      width: 250,
+      height: 250,
+      
+    
+    },
+    fps: 20,
+  });
+
+  document.getElementById('scanButton').addEventListener('click', () => {
+    scanner.clear();
+    scanner.render(scanSuccess, error);
+  });
+
+  document.getElementById('restartButton').addEventListener('click', () => {
+    qrCode1 = null;
+    qrCode2 = null;
+    displayMessage('');
+    document.getElementById('scanButton').style.display = 'block';
+    document.getElementById('restartButton').style.display = 'none';
+  });
+
+  function scanSuccess(result) {
+    if (qrCode1 === null) {
+      qrCode1 = result;
+
+      displayMessage('Scan The Next Code');
+    } else if (qrCode1 !== null && qrCode2 === null) {
+      qrCode2 = result;
+      
+
+      // Automatically compare the two QR codes
+      if (qrCode1 === qrCode2) {
+       displayMessage('<h1><span style="color:green;">MATCH </span></h1>');
+      } else {
+        displayMessage('<h1><span style="color:red;"> NO MATCH </span></h1>');
+      }
+
+      // Show the restart button
+      document.getElementById('restartButton').style.display = 'block';
+    }
+    scanner.clear();
+  }
+
+  function displayMessage(message) {
+    document.getElementById('result').innerHTML = `<h1>${message}</h1>`;
+  }
+
+  function error(err) {
+    console.error(err);
+  }
+</script>
+</body>
+</html>
